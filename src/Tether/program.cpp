@@ -45,6 +45,9 @@ bool Program::duplicateCheck(QStringList list) {
     return false;
 }
 
+
+
+
 bool Program::parseRawLine(QString line) {
 
     line = "[NEW] aaa aaa [TITLE]bbb aaa [DELEGATE] ccc [TETHER]     a [TITLE] cccc";
