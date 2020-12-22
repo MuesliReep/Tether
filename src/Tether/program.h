@@ -21,7 +21,7 @@ private:
 
     QHash<QString, void (Program::*)(QString)> inputMap;
 
-    void parse(QString line);
+    bool parseRawLine(QString line);
     void parseNew(QString input);
     void createInputMap();
     void parseTag(QString input);
@@ -30,6 +30,9 @@ private:
     void parseDueDate(QString input);
 
     void parseTether(QString input);
+    bool duplicateCheck(QStringList list);
+    bool emptyCommandCheck(QHash<QString, QString> commands);
+    void executeCommands(QHash<QString, QString> commands);
 signals:
 
 private slots:
