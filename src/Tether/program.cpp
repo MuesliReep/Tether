@@ -3,18 +3,17 @@
 #include <QRegularExpression>
 #include <QTextStream>
 
-Program::Program(QObject *parent) : QObject(parent), notifier(STDIN_FILENO, QSocketNotifier::Read), inStream(stdin) {
-
-
-
+Program::Program(QObject *parent) : QObject(parent)
+//  ,     notifier(STDIN_FILENO, QSocketNotifier::Read), inStream(stdin)
+{
 
 //    connect(&notifier, &QSocketNotifier::activated, this, &Program::notified);
 
-    connect(inStream.device(), &QIODevice::readyRead, this, &Program::notified);
+//    connect(inStream.device(), &QIODevice::readyRead, this, &Program::notified);
 
     createInputMap();
 
-    qDebug("Test");
+
     parse("test");
 }
 
@@ -24,6 +23,8 @@ void Program::createInputMap() {
     inputMap["TAG"]         = &Program::parseTag;
     inputMap["DELEGATE"]    = &Program::parseDelegate;
     inputMap["TITLE"]       = &Program::parseTitle;
+    inputMap["DUE"]         = &Program::parseDueDate;
+    inputMap["TETHER"]      = &Program::parseTether;
 }
 
 void Program::notified() {
@@ -33,14 +34,17 @@ void Program::notified() {
 
 void Program::parse(QString line) {
 
-    line = "[NEW] aaa aaa [TITLE]bbb [DELEGATE] ccc";
+    line = "[NEW] aaa aaa [TITLE]bbb aaa [DELEGATE] ccc";
 
 
 //    QList<QString> duplicateCheck;
 
 
 
-    QRegularExpression commandInputEx("(\\[\\w+\\]( |)\\w+)");
+//    QRegularExpression commandInputEx("(\\[\\w+\\]( |)\\w+)");
+
+    // Debug with: https://regex101.com/
+    QRegularExpression commandInputEx("(\\[\\w+\\]( |)(\\w+( |)){1,})");
     QRegularExpression commandEx("(\\[\\w+\\])");
 
     QRegularExpressionMatchIterator matchIterator = commandInputEx.globalMatch(line);
@@ -49,21 +53,25 @@ void Program::parse(QString line) {
 
         QRegularExpressionMatch match = matchIterator.next();
         QString word = match.captured(1);
-        qInfo(word.toUtf8());
 
-        QRegularExpressionMatch match2 = commandEx.match(word);
+//        qInfo(word.toUtf8());
 
-        if(match2.hasMatch()) {
+        QRegularExpressionMatch commandMatch = commandEx.match(word);
+
+        if(commandMatch.hasMatch()) {
 
             //
-            QString command = match2.captured(0);
+            QString command = commandMatch.captured(0);
+
+            //
+            QString input = word.remove(command);
 
             // Remove brackets
             command.remove('[');
             command.remove(']');
 
             // Parse it
-            inputMap.contains(command) ? (this->*inputMap.value(command))("aaa")  : qInfo("Invalid Command!");
+            inputMap.contains(command) ? (this->*inputMap.value(command))(input)  : qInfo("Invalid Command!");
         }else {
             qInfo("No command match!");
         }
@@ -77,18 +85,26 @@ void Program::parse(QString line) {
 
 }
 
+void Program::parseTether(QString input) {
+    qInfo("TETHER keyword, input: %s", input.toStdString().c_str());
+}
+
+void Program::parseDueDate(QString input) {
+    qInfo("DUE keyword, input: %s", input.toStdString().c_str());
+}
+
 void Program::parseNew(QString input) {
-    qInfo("NEW keyword");
+    qInfo("NEW keyword, input: %s", input.toStdString().c_str());
 }
 
 void Program::parseTag(QString input) {
-    qInfo("TAG keyword");
+    qInfo("TAG keyword, input: %s", input.toStdString().c_str());
 }
 
 void Program::parseDelegate(QString input) {
-    qInfo("DELEGATE keyword");
+    qInfo("DELEGATE keyword, input: %s", input.toStdString().c_str());
 }
 
 void Program::parseTitle(QString input) {
-    qInfo("TITLE keyword");
+    qInfo("TITLE keyword, input: %s", input.toStdString().c_str());
 }

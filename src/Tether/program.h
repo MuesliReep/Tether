@@ -16,7 +16,7 @@ public:
     explicit Program(QObject *parent = nullptr);
 
 private:
-    QSocketNotifier notifier;
+//    QSocketNotifier notifier;
     QTextStream inStream;
 
     QHash<QString, void (Program::*)(QString)> inputMap;
@@ -27,6 +27,9 @@ private:
     void parseTag(QString input);
     void parseDelegate(QString input);
     void parseTitle(QString input);
+    void parseDueDate(QString input);
+
+    void parseTether(QString input);
 signals:
 
 private slots:
