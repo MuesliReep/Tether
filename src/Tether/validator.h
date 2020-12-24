@@ -5,10 +5,12 @@
 
 class Validator
 {
-public:
-    Validator();
+
 public:
     static bool validateLine(QString line);
+private:
+    static bool checkBrackets(QString line);
+    static bool checkQuotes(QString line);
 };
 
 #endif // VALIDATOR_H

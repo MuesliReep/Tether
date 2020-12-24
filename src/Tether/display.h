@@ -21,17 +21,20 @@ public:
 private:
 
     QHash<int, void (Display::*)(void)> specialKeyMap;
-    QHash<int, int> normalKeyOptionMap;
+    QHash<char, chtype> normalKeyOptionMap;
 
     QString inputString     {""};
     int inputCursorPosition {0};
 
-
     WINDOW * win;
+
+    bool wasValid {false};
+
     void initDisplay();
     void createWindow();
     void doBackspace();
     void initSpecialKeyMap();
+    void initNormalKeyOptionMap();
     void processSpecialKey(int keyCode);
     void doLeftKey();
     void doRightKey();
@@ -41,10 +44,8 @@ private:
     void doHomeKey();
     void doEndKey();
     void processKeys();
-signals:
 
-private:
-    void initNormalKeyOptionMap();
+    void setInputStringValidation(bool valid);
 };
 
 #endif // DISPLAY_H

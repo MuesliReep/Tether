@@ -1,10 +1,42 @@
 #include "validator.h"
 
-Validator::Validator()
-{
-
-}
 
 bool Validator::validateLine(QString line) {
 
+    // First do some easy checks
+    if(!checkBrackets(line)) {
+        return false;
+    }
+
+    //
+    if(!checkBrackets(line)) {
+        return false;
+    }
+
+    return true;
+}
+
+// Checks if the same number of opening and closing brackets has been used
+bool Validator::checkBrackets(QString line) {
+
+    int openingBrackets = line.count("[");
+    int closingBrackets = line.count("]");
+
+    if(openingBrackets != closingBrackets) {
+        return false;
+    }
+
+    return true;
+}
+
+// Checks if an even number of quotes has been used
+bool Validator::checkQuotes(QString line) {
+
+    bool result;
+
+    int numQuotes = line.count("\"");
+
+    (numQuotes % 2 == 0) ? result = true :  result = false;
+
+    return result;
 }

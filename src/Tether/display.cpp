@@ -34,10 +34,32 @@ void Display::processKeys() {
         }
 
         // Validate the input string
-        // validateInput();
+        if(Validator::validateLine(inputString)) {
+
+            if(!wasValid) {
+                setInputStringValidation(true);
+                wasValid = true;
+            }
+
+        } else {
+
+            if(wasValid) {
+                setInputStringValidation(false);
+                wasValid = false;
+            }
+        }
 
         // Refresh the window for it to take effect
         wrefresh(win);
+    }
+}
+
+void Display::setInputStringValidation(bool valid) {
+
+    if(valid) {
+        // Set to green
+    } else {
+        // Set to red
     }
 }
 
@@ -95,7 +117,7 @@ void Display::insertCharacter(int ch) {
 void Display::addCharacter(int ch) {
 
     //
-    char option = A_NORMAL;
+    chtype option = A_NORMAL;
     if (normalKeyOptionMap.contains(ch)) {
         option = normalKeyOptionMap.value(ch); }
 
@@ -244,9 +266,9 @@ void Display::processSpecialKey(int keyCode) {
 
 void Display::initNormalKeyOptionMap() {
 
-    normalKeyOptionMap['['] = A_BOLD | COLOR_PAIR(3) | A_UNDERLINE;
-    normalKeyOptionMap[']'] = A_BOLD | COLOR_PAIR(3);
-    normalKeyOptionMap['X'] = A_BOLD | A_UNDERLINE;
+    normalKeyOptionMap['['] = A_BOLD | COLOR_PAIR(1);
+    normalKeyOptionMap[']'] = A_BOLD | COLOR_PAIR(1);
+    normalKeyOptionMap['x'] = A_BOLD | A_UNDERLINE ;
 }
 
 void Display::initSpecialKeyMap() {
@@ -267,6 +289,8 @@ void Display::initDisplay() {
     keypad(stdscr, TRUE); // Capture special keys
 
     start_color();
+
+    init_pair(1, COLOR_RED, COLOR_BLACK);
 
     createWindow();
 }
