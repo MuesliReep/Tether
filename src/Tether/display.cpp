@@ -85,8 +85,7 @@ void Display::insertCharacter(int ch) {
     // does not do this by itself
 
     // Get the window dimensions
-    int h, w;
-    getmaxyx(stdscr, h, w);
+    int windowWidth = getWindowWidth();
 
     if (inputString.length() > getWindowWidth()) {
 
@@ -101,7 +100,7 @@ void Display::insertCharacter(int ch) {
 
         for (int i = 0; i < rowSpan; i++) {
             wmove(win, userY + i, 0);
-            QByteArray rowByteArray = inputString.mid(w * (currentRow + i), w).toLocal8Bit();
+            QByteArray rowByteArray = inputString.mid(windowWidth * (currentRow + i), windowWidth).toLocal8Bit();
             const char *rowString = rowByteArray.data();
             waddstr(win, rowString);
         }
@@ -184,13 +183,12 @@ void Display::doEndKey() {
     getyx(win, y, x);
 
     // Get the window dimensions
-    int h, w;
-    getmaxyx(stdscr, h, w);
+    int windowWidth = getWindowWidth();
 
     // Add the difference between the window width and the window cursor position.
     // If this is beyond the input string length, subtract and add the difference
     // as the new position.
-    int distance = w - x - 1;
+    int distance = windowWidth - x - 1;
     if ((inputCursorPosition + distance) <= inputString.length()) {
 
         //
@@ -222,11 +220,8 @@ void Display::doLeftKey() {
         // move it to the row above, right most position
         if(x == 0 && y > 0) {
 
-            int h, w;
-            getmaxyx(stdscr, h, w);
-
             y--;
-            x = w - 1;
+            x = getWindowWidth() - 1;
         } else {
             x--; // Just go left
         }
@@ -247,12 +242,8 @@ void Display::doRightKey() {
     // Only move right if we are not at the end of the string
     if (inputCursorPosition < inputString.length()) {
 
-        // Get height and width of screen
-        int h, w;
-        getmaxyx(stdscr, h, w);
-
         // If the cursor is at the end of the line, go down one
-        if(x == (w - 1)) {
+        if(x == (getWindowWidth() - 1)) {
             x = 0;
             y++;
         } else { // Just go right one position
