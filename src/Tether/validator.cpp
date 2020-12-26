@@ -32,7 +32,7 @@ bool Validator::checkBrackets(const QString& line) {
 // Checks if an even number of quotes has been used
 bool Validator::checkQuotes(const QString& line) {
 
-    bool result;
+    bool result = false;
 
     int numQuotes = line.count("\"");
 
