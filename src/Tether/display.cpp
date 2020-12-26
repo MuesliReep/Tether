@@ -113,6 +113,34 @@ void Display::insertCharacter(int ch) {
     doRightKey();
 }
 
+void Display::redrawInputString() {
+
+    // Clear window
+    werase(win);
+
+    // Set window cursor to start position
+    wmove(win, 0, 0);
+
+    char ch = ' ';
+    chtype option = A_NORMAL;
+
+    // Write the string
+    for (int i = 0; i < inputString.length(); i ++) {
+
+        // Get the char from the input string
+        ch = inputString.at(i).toLatin1();
+
+        // Get the char options
+        normalKeyOptionMap.contains(ch) ?  option = normalKeyOptionMap.value(ch) : option = A_NORMAL;
+
+        // Add the char, with options, to the window
+        waddch(win, ch | option);
+    }
+
+    // Set the cursor back to the users position
+    wmove(win, getCurrentRow(), getCurrentColumn());
+}
+
 int Display::getWindowWidth() {
 
     // Get the window dimensions
@@ -134,6 +162,11 @@ int Display::getWindowHeight() {
 int Display::getCurrentRow() {
 
     return inputCursorPosition / getWindowWidth();
+}
+
+int Display::getCurrentColumn() {
+
+    return inputCursorPosition - (getCurrentRow()  * getWindowWidth());
 }
 
 int Display::getNumberOfRowsInString() {
@@ -261,14 +294,11 @@ void Display::doBackspace() {
     // Place cursor one place to the left
     doLeftKey();
 
-    // Remove char
-    wdelch(win);
-
     // Remove char from inputString
     inputString.remove(inputCursorPosition, 1);
 
-    // TODO: check if the input string is wrapped to another line
-    // if so, pull it back.
+    //
+    redrawInputString();
 }
 
 Display::~Display() {

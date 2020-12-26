@@ -54,6 +54,8 @@ private:
     int getCurrentRow();
     int getWindowHeight();
     int getWindowWidth();
+    int getCurrentColumn();
+    void redrawInputString();
 };
 
 #endif // DISPLAY_H
