@@ -1,7 +1,7 @@
 #include "validator.h"
 
 
-bool Validator::validateLine(QString line) {
+bool Validator::validateLine(const QString& line) {
 
     // First do some easy checks
     if(!checkBrackets(line)) {
@@ -17,7 +17,7 @@ bool Validator::validateLine(QString line) {
 }
 
 // Checks if the same number of opening and closing brackets has been used
-bool Validator::checkBrackets(QString line) {
+bool Validator::checkBrackets(const QString& line) {
 
     int openingBrackets = line.count("[");
     int closingBrackets = line.count("]");
@@ -30,7 +30,7 @@ bool Validator::checkBrackets(QString line) {
 }
 
 // Checks if an even number of quotes has been used
-bool Validator::checkQuotes(QString line) {
+bool Validator::checkQuotes(const QString& line) {
 
     bool result;
 

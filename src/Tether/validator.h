@@ -7,10 +7,10 @@ class Validator
 {
 
 public:
-    static bool validateLine(QString line);
+    static bool validateLine(const QString& line);
 private:
-    static bool checkBrackets(QString line);
-    static bool checkQuotes(QString line);
+    static bool checkBrackets(const QString& line);
+    static bool checkQuotes(const QString& line);
 };
 
 #endif // VALIDATOR_H
