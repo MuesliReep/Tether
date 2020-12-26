@@ -88,7 +88,7 @@ void Display::insertCharacter(int ch) {
     int h, w;
     getmaxyx(stdscr, h, w);
 
-    if (inputString.length() > w) {
+    if (inputString.length() > getWindowWidth()) {
 
         // Get cursor current position
         int userY;
@@ -96,8 +96,8 @@ void Display::insertCharacter(int ch) {
         getyx(win, userY, userX);
 
         // How many rows does the input string span?
-        int rowSpan    = (inputString.length() / w) + 1;
-        int currentRow = inputCursorPosition / w;
+        int rowSpan    = getNumberOfRowsInString();
+        int currentRow = getCurrentRow();
 
         for (int i = 0; i < rowSpan; i++) {
             wmove(win, userY + i, 0);
@@ -112,6 +112,34 @@ void Display::insertCharacter(int ch) {
 
     // Move cursor right
     doRightKey();
+}
+
+int Display::getWindowWidth() {
+
+    // Get the window dimensions
+    int h, w;
+    getmaxyx(stdscr, h, w);
+
+    return w;
+}
+
+int Display::getWindowHeight() {
+
+    // Get the window dimensions
+    int h, w;
+    getmaxyx(stdscr, h, w);
+
+    return h;
+}
+
+int Display::getCurrentRow() {
+
+    return inputCursorPosition / getWindowWidth();
+}
+
+int Display::getNumberOfRowsInString() {
+
+    return (inputString.length() / getWindowWidth()) + 1;
 }
 
 void Display::addCharacter(int ch) {
@@ -271,6 +299,35 @@ void Display::initNormalKeyOptionMap() {
     normalKeyOptionMap['x'] = A_BOLD | A_UNDERLINE ;
 }
 
+void Display::doUpKey() {
+
+    // Check if there is another row above
+    int currentRow = getCurrentRow();
+    if(currentRow > 0) {
+
+        // Get cursor current position
+        int y;
+        int x;
+        getyx(win, y, x);
+
+        // Move it up by one
+        wmove(win, y - 1, x);
+
+        //
+        inputCursorPosition -= getWindowWidth();
+    }
+}
+
+void Display::doDownKey() {
+
+    // Check if there is another row below
+    int rowSpan = getNumberOfRowsInString();
+    int currentRow = getCurrentRow();
+    if(currentRow < rowSpan) {
+
+    }
+}
+
 void Display::initSpecialKeyMap() {
 
     specialKeyMap[KEY_BACKSPACE]    = &Display::doBackspace;
@@ -278,6 +335,8 @@ void Display::initSpecialKeyMap() {
     specialKeyMap[KEY_RIGHT]        = &Display::doRightKey;
     specialKeyMap[KEY_HOME]         = &Display::doHomeKey;
     specialKeyMap[KEY_END]          = &Display::doEndKey;
+    specialKeyMap[KEY_UP]           = &Display::doUpKey;
+    specialKeyMap[KEY_DOWN]         = &Display::doDownKey;
 }
 
 void Display::initDisplay() {

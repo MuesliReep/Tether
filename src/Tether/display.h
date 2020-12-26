@@ -36,8 +36,7 @@ private:
     void initSpecialKeyMap();
     void initNormalKeyOptionMap();
     void processSpecialKey(int keyCode);
-    void doLeftKey();
-    void doRightKey();
+
     void addCharacter(int ch);
     void insertCharacter(int ch);
     void processNormalKey(int ch);
@@ -46,6 +45,15 @@ private:
     void processKeys();
 
     void setInputStringValidation(bool valid);
+
+    void doUpKey();
+    void doDownKey();
+    void doLeftKey();
+    void doRightKey();
+    int getNumberOfRowsInString();
+    int getCurrentRow();
+    int getWindowHeight();
+    int getWindowWidth();
 };
 
 #endif // DISPLAY_H
