@@ -321,10 +321,50 @@ void Display::doUpKey() {
 void Display::doDownKey() {
 
     // Check if there is another row below
-    int rowSpan = getNumberOfRowsInString();
+    int rowSpan    = getNumberOfRowsInString();
     int currentRow = getCurrentRow();
+
     if(currentRow < rowSpan) {
 
+        // Get cursor current position
+        int y;
+        int x;
+        getyx(win, y, x);
+
+        // Check if the next row below is the last row
+        if(currentRow + 1 == (rowSpan - 1)) {
+
+            // Subtract the rows before the final row to get the
+            // last posible cursor position
+            int lastRowPosition = inputString.length() - ((rowSpan - 1) * getWindowWidth());
+
+            // Now check if the position asked by the user (the position directly below
+            // the cursor) is available
+            if(lastRowPosition >= x) {
+
+                // The position is available, we can move to it
+                wmove(win, y + 1, x);
+
+                //
+                inputCursorPosition += getWindowWidth();
+
+            } else {
+
+                // The position is not available, move to the last possible position
+                wmove(win, y + 1, lastRowPosition);
+
+                //
+                inputCursorPosition = inputString.length();
+            }
+
+        } else {
+
+            // Just go down one
+            wmove(win, y + 1, x);
+
+            //
+            inputCursorPosition += getWindowWidth();
+        }
     }
 }
 
