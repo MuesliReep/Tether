@@ -55,6 +55,7 @@ private:
     int getWindowWidth();
     int getCurrentColumn();
     void redrawInputString();
+    void doDeleteKey();
 };
 
 #endif // DISPLAY_H

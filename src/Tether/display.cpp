@@ -252,6 +252,15 @@ void Display::doBackspace() {
     redrawInputString();
 }
 
+void Display::doDeleteKey() {
+
+    // Remove char from inputString
+    inputString.remove(inputCursorPosition, 1);
+
+    //
+    redrawInputString();
+}
+
 Display::~Display() {
     // Restore terminal
     endwin();
@@ -349,6 +358,7 @@ void Display::initSpecialKeyMap() {
     specialKeyMap[KEY_END]          = &Display::doEndKey;
     specialKeyMap[KEY_UP]           = &Display::doUpKey;
     specialKeyMap[KEY_DOWN]         = &Display::doDownKey;
+    specialKeyMap[KEY_DC]           = &Display::doDeleteKey;
 }
 
 void Display::initDisplay() {
