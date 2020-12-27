@@ -349,6 +349,10 @@ void Display::doDownKey() {
     }
 }
 
+void Display::doEnterKey() {
+
+}
+
 void Display::initSpecialKeyMap() {
 
     specialKeyMap[KEY_BACKSPACE]    = &Display::doBackspace;
@@ -359,6 +363,7 @@ void Display::initSpecialKeyMap() {
     specialKeyMap[KEY_UP]           = &Display::doUpKey;
     specialKeyMap[KEY_DOWN]         = &Display::doDownKey;
     specialKeyMap[KEY_DC]           = &Display::doDeleteKey;
+    specialKeyMap[KEY_ENTER]        = &Display::doEnterKey;
 }
 
 void Display::initDisplay() {

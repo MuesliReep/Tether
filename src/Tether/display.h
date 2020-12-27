@@ -56,6 +56,7 @@ private:
     int getCurrentColumn();
     void redrawInputString();
     void doDeleteKey();
+    void doEnterKey();
 };
 
 #endif // DISPLAY_H
