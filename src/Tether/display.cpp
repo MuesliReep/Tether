@@ -65,52 +65,19 @@ void Display::setInputStringValidation(bool valid) {
 
 void Display::processNormalKey(int ch) {
 
-    // Check if the character needs to be inserted or just placed at the end
-    if (inputCursorPosition != inputString.length()) {
-        insertCharacter(ch);
-    } else {
-        addCharacter(ch);
-    }
+    insertCharacter(ch);
 }
 
 void Display::insertCharacter(int ch) {
 
-    // Insert char
-    winsch(win, ch);
-
     // Add char to input string
     inputString.insert(inputCursorPosition, QChar(ch));
 
-    // Check if the string needs to be wrapped, because winsch()
-    // does not do this by itself
-
-    // Get the window dimensions
-    int windowWidth = getWindowWidth();
-
-    if (inputString.length() > getWindowWidth()) {
-
-        // Get cursor current position
-        int userY;
-        int userX;
-        getyx(win, userY, userX);
-
-        // How many rows does the input string span?
-        int rowSpan    = getNumberOfRowsInString();
-        int currentRow = getCurrentRow();
-
-        for (int i = 0; i < rowSpan; i++) {
-            wmove(win, userY + i, 0);
-            QByteArray rowByteArray = inputString.mid(windowWidth * (currentRow + i), windowWidth).toLocal8Bit();
-            const char *rowString = rowByteArray.data();
-            waddstr(win, rowString);
-        }
-
-        // Finally set the window cursor to the users position
-        wmove(win, userY, userX);
-    }
-
-    // Move cursor right
+    // Move window cursor right
     doRightKey();
+
+    // Redraw entire string
+    redrawInputString();
 }
 
 void Display::redrawInputString() {
@@ -145,7 +112,7 @@ int Display::getWindowWidth() {
 
     // Get the window dimensions
     int h, w;
-    getmaxyx(stdscr, h, w);
+    getmaxyx(win, h, w);
 
     return w;
 }
@@ -154,7 +121,7 @@ int Display::getWindowHeight() {
 
     // Get the window dimensions
     int h, w;
-    getmaxyx(stdscr, h, w);
+    getmaxyx(win, h, w);
 
     return h;
 }
@@ -172,22 +139,6 @@ int Display::getCurrentColumn() {
 int Display::getNumberOfRowsInString() {
 
     return (inputString.length() / getWindowWidth()) + 1;
-}
-
-void Display::addCharacter(int ch) {
-
-    //
-    chtype option = A_NORMAL;
-    if (normalKeyOptionMap.contains(ch)) {
-        option = normalKeyOptionMap.value(ch); }
-
-    // Add char
-    waddch(win, ch | option);
-//    waddch(win, 'X' | A_UNDERLINE | A_BOLD | COLOR_PAIR(3));
-
-    // Add char to input string
-    inputString.insert(inputCursorPosition, QChar(ch));
-    inputCursorPosition++;
 }
 
 void Display::doHomeKey() {
@@ -345,7 +296,7 @@ void Display::doDownKey() {
     int rowSpan    = getNumberOfRowsInString();
     int currentRow = getCurrentRow();
 
-    if(currentRow < rowSpan) {
+    if(currentRow < rowSpan - 1) {
 
         // Get cursor current position
         int y;
@@ -411,6 +362,7 @@ void Display::initDisplay() {
     start_color();
 
     init_pair(1, COLOR_RED, COLOR_BLACK);
+    init_pair(2, COLOR_GREEN, COLOR_BLACK);
 
     createWindow();
 }

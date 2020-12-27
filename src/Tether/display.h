@@ -37,7 +37,6 @@ private:
     void initNormalKeyOptionMap();
     void processSpecialKey(int keyCode);
 
-    void addCharacter(int ch);
     void insertCharacter(int ch);
     void processNormalKey(int ch);
     void doHomeKey();
