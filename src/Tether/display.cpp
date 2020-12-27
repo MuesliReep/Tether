@@ -49,9 +49,16 @@ void Display::processKeys() {
             }
         }
 
+        // Redraw entire input string
+        redrawInputString();
+
         // Refresh the window for it to take effect
         wrefresh(win);
     }
+}
+
+void Display::autoComplete() {
+
 }
 
 void Display::setInputStringValidation(bool valid) {
@@ -75,9 +82,6 @@ void Display::insertCharacter(int ch) {
 
     // Move window cursor right
     doRightKey();
-
-    // Redraw entire string
-    redrawInputString();
 }
 
 void Display::redrawInputString() {
@@ -247,18 +251,12 @@ void Display::doBackspace() {
 
     // Remove char from inputString
     inputString.remove(inputCursorPosition, 1);
-
-    //
-    redrawInputString();
 }
 
 void Display::doDeleteKey() {
 
     // Remove char from inputString
     inputString.remove(inputCursorPosition, 1);
-
-    //
-    redrawInputString();
 }
 
 Display::~Display() {
@@ -378,6 +376,7 @@ void Display::initDisplay() {
 
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(3, COLOR_BLACK, COLOR_YELLOW);
 
     createWindow();
 }

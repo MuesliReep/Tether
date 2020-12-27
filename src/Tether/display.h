@@ -57,6 +57,7 @@ private:
     void redrawInputString();
     void doDeleteKey();
     void doEnterKey();
+    void autoComplete();
 };
 
 #endif // DISPLAY_H
