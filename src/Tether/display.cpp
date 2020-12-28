@@ -12,6 +12,8 @@ Display::Display(QObject *parent) : QObject(parent) {
 
     initSpecialKeyMap();
 
+    initAutocompleteKeyMap();
+
     initNormalKeyOptionMap();
 
     processKeys();
@@ -25,9 +27,12 @@ void Display::processKeys() {
         int ch = getch();
 
         // Differentiate between special and normal keys
-        if(ch >= KEY_MIN && ch) {
+        if(ch >= KEY_MIN && ch <= KEY_MAX) {
 
             processSpecialKey(ch);
+        } else if (ch == 10) {
+
+            processSpecialKey(KEY_ENTER);
         } else {
 
             processNormalKey(ch);
@@ -52,6 +57,10 @@ void Display::processKeys() {
         // Redraw entire input string
         redrawInputString();
 
+        if(autoCompleteActive) {
+            autoComplete();
+        }
+
         // Refresh the window for it to take effect
         wrefresh(win);
     }
@@ -59,6 +68,54 @@ void Display::processKeys() {
 
 void Display::autoComplete() {
 
+    // Set autoComplete below open bracket
+    wmove(win, getCurrentRow() + 1, autoCompletePosition - 1);
+
+    // Show valid commands
+
+    // Find the longest
+    int commandLength = findLongestCommand();
+
+    int i = 1;
+    foreach (auto command, Validator::getValidCommands()) {
+
+        wmove(win, getCurrentRow() + i, autoCompletePosition - 1);
+
+        // Get the description string
+        QString descriptionString = Validator::getValidCommandDescription(command);
+
+        QChar pad(' ');
+
+        // Prepend a space
+        QString paddedCommand = command.prepend(pad);
+
+        // Now pad the string so all are the same length
+        paddedCommand = paddedCommand.leftJustified(commandLength + 2, ' ');
+
+        // Place the command string
+        autoCompleteOption == i ? wattron(win, COLOR_PAIR(4)) : wattron(win, COLOR_PAIR(3));
+        waddstr(win, paddedCommand.toLocal8Bit().data());
+
+        // Calculate space left for description
+        int descriptionLength = getWindowWidth() - autoCompletePosition - commandLength;
+
+        wattron(win, COLOR_PAIR(2));
+
+        // Place the description string
+        if(descriptionString.length() > descriptionLength) {
+            int difference = descriptionLength - descriptionString.length();
+            descriptionString.remove(descriptionString.length() - difference - 1, difference);
+        }
+
+        waddstr(win, descriptionString.toLocal8Bit().data());
+
+        i++;
+    }
+
+    wattron(win, COLOR_PAIR(1));
+
+    // Return window cursor
+    wmove(win, getCurrentRow(), getCurrentColumn());
 }
 
 void Display::setInputStringValidation(bool valid) {
@@ -73,15 +130,33 @@ void Display::setInputStringValidation(bool valid) {
 void Display::processNormalKey(int ch) {
 
     insertCharacter(ch);
+
+    if(autoCompleteActive) {
+        autoCompleteString.append(QChar(ch).toUpper());
+    }
+
+    if(ch == '[') {
+        turnAutoCompleteOn();
+    } else if (ch == ']') {
+        turnAutoCompleteOff();
+    }
 }
 
 void Display::insertCharacter(int ch) {
 
     // Add char to input string
-    inputString.insert(inputCursorPosition, QChar(ch));
+    inputString.insert(inputCursorPosition,
+                       autoCompleteActive ? QChar(ch).toUpper() : QChar(ch));
 
     // Move window cursor right
     doRightKey();
+}
+
+void Display::insertString(QString string) {
+
+    inputString.insert(inputCursorPosition, string);
+
+    inputCursorPosition += string.length();
 }
 
 void Display::redrawInputString() {
@@ -266,7 +341,12 @@ Display::~Display() {
 
 void Display::processSpecialKey(int keyCode) {
 
-    if (specialKeyMap.contains(keyCode)) {
+    if(autoCompleteActive && autocompleteKeyMap.contains(keyCode)) {
+
+        (this->*autocompleteKeyMap.value(keyCode))();
+
+    } else if (specialKeyMap.contains(keyCode)) {
+
         (this->*specialKeyMap.value(keyCode))();
     }
 }
@@ -276,6 +356,13 @@ void Display::initNormalKeyOptionMap() {
     normalKeyOptionMap['['] = A_BOLD | COLOR_PAIR(1);
     normalKeyOptionMap[']'] = A_BOLD | COLOR_PAIR(1);
     normalKeyOptionMap['x'] = A_BOLD | A_UNDERLINE ;
+}
+
+void Display::initAutocompleteKeyMap() {
+
+    autocompleteKeyMap[KEY_UP]    = &Display::autoCompleteOptionUp;
+    autocompleteKeyMap[KEY_DOWN]  = &Display::autoCompleteOptionDown;
+    autocompleteKeyMap[KEY_ENTER] = &Display::autoCompleteOptionEnter;
 }
 
 void Display::doUpKey() {
@@ -377,6 +464,7 @@ void Display::initDisplay() {
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_BLACK, COLOR_YELLOW);
+    init_pair(4, COLOR_YELLOW, COLOR_BLACK);
 
     createWindow();
 }

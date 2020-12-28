@@ -21,6 +21,7 @@ public:
 private:
 
     QHash<int, void (Display::*)(void)> specialKeyMap;
+    QHash<int, void (Display::*)(void)> autocompleteKeyMap;
     QHash<char, chtype> normalKeyOptionMap;
 
     QString inputString     {""};
@@ -28,7 +29,14 @@ private:
 
     WINDOW * win;
 
-    bool wasValid {false};
+    bool wasValid             {false};
+    bool autoCompleteActive   {false};
+    int  autoCompletePosition {0};
+    int  autoCompleteOption   {0};
+
+    QString autoCompleteString {""};
+
+    static const int autoCompleteOptions {6};
 
     void initDisplay();
     void createWindow();
@@ -58,6 +66,14 @@ private:
     void doDeleteKey();
     void doEnterKey();
     void autoComplete();
+    int findLongestCommand();
+    void turnAutoCompleteOn();
+    void turnAutoCompleteOff();
+    void autoCompleteOptionUp();
+    void autoCompleteOptionDown();
+    void initAutocompleteKeyMap();
+    void autoCompleteOptionEnter();
+    void insertString(QString string);
 };
 
 #endif // DISPLAY_H

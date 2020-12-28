@@ -1,5 +1,7 @@
 #include "validator.h"
 
+#include <QStringList>
+
 
 bool Validator::validateLine(const QString& line) {
 
@@ -14,6 +16,40 @@ bool Validator::validateLine(const QString& line) {
     }
 
     return true;
+}
+
+QStringList Validator::getValidCommands() {
+
+    QStringList validCommands;
+
+    validCommands.append("NEW");
+    validCommands.append("TAG");
+    validCommands.append("DELEGATE");
+    validCommands.append("TITLE");
+    validCommands.append("DUE");
+    validCommands.append("TETHER");
+
+    return validCommands;
+}
+
+QString Validator::getValidCommandDescription(QString command) {
+
+    QHash<QString, QString> commandDescriptions;
+
+    commandDescriptions["NEW"] = "Create a new item";
+    commandDescriptions["TAG"] = "Set a searchable tag";
+    commandDescriptions["DELEGATE"] = "Delegate this item to another person";
+    commandDescriptions["TITLE"] = "Set a title for this item";
+    commandDescriptions["DUE"] = "Set a due date";
+    commandDescriptions["TETHER"] = "Directly link this item to another";
+
+    QString result = "Unknown";
+
+    if(commandDescriptions.contains(command)) {
+        result = commandDescriptions.value(command);
+    }
+
+    return result;
 }
 
 // Checks if the same number of opening and closing brackets has been used
