@@ -39,7 +39,7 @@ void Display::autoCompleteOptionUp() {
     autoCompleteOption--;
 
     if(autoCompleteOption < 1) {
-        autoCompleteOption = autoCompleteOptions;
+        autoCompleteOption = maxAutoCompleteOptions;
     }
 }
 
@@ -47,7 +47,7 @@ void Display::autoCompleteOptionDown() {
 
     autoCompleteOption++;
 
-    if(autoCompleteOption > autoCompleteOptions) {
+    if(autoCompleteOption > maxAutoCompleteOptions) {
         autoCompleteOption = 1;
     }
 }
