@@ -51,8 +51,6 @@ private:
     void doEndKey();
     void processKeys();
 
-    void setInputStringValidation(bool valid);
-
     void doUpKey();
     void doDownKey();
     void doLeftKey();

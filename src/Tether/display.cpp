@@ -39,29 +39,17 @@ void Display::processKeys() {
         }
 
         // Validate the input string
-        if(Validator::validateLine(inputString)) {
-
-            if(!wasValid) {
-                setInputStringValidation(true);
-                wasValid = true;
-            }
-
-        } else {
-
-            if(wasValid) {
-                setInputStringValidation(false);
-                wasValid = false;
-            }
-        }
+        inputStringIsValid = Validator::validateLine(inputString);
 
         // Redraw entire input string
         redrawInputString();
 
+        // Do autocompletion
         if(autoCompleteActive) {
             autoComplete();
         }
 
-        // Refresh the window for it to take effect
+        // Refresh the window for changes to take effect
         wrefresh(win);
     }
 }
@@ -118,15 +106,6 @@ void Display::autoComplete() {
     wmove(win, getCurrentRow(), getCurrentColumn());
 }
 
-void Display::setInputStringValidation(bool valid) {
-
-    if(valid) {
-        // Set to green
-    } else {
-        // Set to red
-    }
-}
-
 void Display::processNormalKey(int ch) {
 
     insertCharacter(ch);
@@ -169,6 +148,9 @@ void Display::redrawInputString() {
 
     char ch = ' ';
     chtype option = A_NORMAL;
+
+
+    // TODO: If string is invalid, change colour
 
     // Write the string
     for (int i = 0; i < inputString.length(); i ++) {
