@@ -67,6 +67,10 @@ void Display::autoComplete() {
     int i = 1;
     foreach (auto command, Validator::getValidCommands()) {
 
+        if (i > maxAutoCompleteOptions) {
+            break;
+        }
+
         wmove(win, getCurrentRow() + i, autoCompletePosition - 1);
 
         // Get the description string
@@ -88,6 +92,9 @@ void Display::autoComplete() {
         int descriptionLength = getWindowWidth() - autoCompletePosition - commandLength;
 
         wattron(win, COLOR_PAIR(2));
+
+        // Add some padding to the beginning
+        descriptionString.prepend(pad);
 
         // Place the description string
         if(descriptionString.length() > descriptionLength) {
@@ -444,7 +451,7 @@ void Display::initDisplay() {
     start_color();
 
     init_pair(1, COLOR_RED, COLOR_BLACK);
-    init_pair(2, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_YELLOW, COLOR_MAGENTA);
     init_pair(3, COLOR_BLACK, COLOR_YELLOW);
     init_pair(4, COLOR_YELLOW, COLOR_BLACK);
 

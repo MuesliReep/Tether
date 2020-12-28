@@ -36,7 +36,7 @@ private:
 
     QString autoCompleteString {""};
 
-    static const int autoCompleteOptions {6};
+    static const int maxAutoCompleteOptions {6};
 
     void initDisplay();
     void createWindow();
