@@ -28,8 +28,21 @@ QStringList Validator::getValidCommands() {
     validCommands.append("TITLE");
     validCommands.append("DUE");
     validCommands.append("TETHER");
+    validCommands.append("MODIFY");
+    validCommands.append("DELETE");
 
     return validCommands;
+}
+
+QStringList Validator::getMandatoryUniqueCommands() {
+
+    QStringList mandatoryUniqueCommands;
+
+    mandatoryUniqueCommands.append("NEW");
+    mandatoryUniqueCommands.append("MODIFY");
+    mandatoryUniqueCommands.append("DELETE");
+
+    return mandatoryUniqueCommands;
 }
 
 QString Validator::getValidCommandDescription(QString command) {
@@ -42,6 +55,8 @@ QString Validator::getValidCommandDescription(QString command) {
     commandDescriptions["TITLE"] = "Set a title for this item";
     commandDescriptions["DUE"] = "Set a due date";
     commandDescriptions["TETHER"] = "Directly link this item to another";
+    commandDescriptions["MODIFY"] = "Modify parts of an existing item";
+    commandDescriptions["DELETE"] = "Deletes an existing item";
 
     QString result = "Unknown";
 

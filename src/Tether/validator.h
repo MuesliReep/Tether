@@ -10,6 +10,7 @@ public:
     static bool validateLine(const QString& line);
     static QString getValidCommandDescription(QString);
     static QStringList getValidCommands();
+    static QStringList getMandatoryUniqueCommands();
 
 private:
     static bool checkBrackets(const QString& line);
