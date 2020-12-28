@@ -29,7 +29,7 @@ private:
 
     WINDOW * win;
 
-    bool wasValid             {false};
+    bool inputStringIsValid             {false};
     bool autoCompleteActive   {false};
     int  autoCompletePosition {0};
     int  autoCompleteOption   {0};
