@@ -12,9 +12,11 @@ public:
     static QStringList getValidCommands();
     static QStringList getMandatoryUniqueCommands();
 
+    static QHash<QString, QString> getValidCommandDescriptions();
 private:
     static bool checkBrackets(const QString& line);
     static bool checkQuotes(const QString& line);
+
 
 
 };

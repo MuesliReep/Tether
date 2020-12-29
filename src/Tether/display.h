@@ -72,6 +72,7 @@ private:
     void initAutocompleteKeyMap();
     void autoCompleteOptionEnter();
     void insertString(QString string);
+    int findLongestCommandDescription();
 };
 
 #endif // DISPLAY_H

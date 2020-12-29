@@ -45,7 +45,7 @@ QStringList Validator::getMandatoryUniqueCommands() {
     return mandatoryUniqueCommands;
 }
 
-QString Validator::getValidCommandDescription(QString command) {
+QHash<QString, QString> Validator::getValidCommandDescriptions() {
 
     QHash<QString, QString> commandDescriptions;
 
@@ -57,6 +57,13 @@ QString Validator::getValidCommandDescription(QString command) {
     commandDescriptions["TETHER"] = "Directly link this item to another";
     commandDescriptions["MODIFY"] = "Modify parts of an existing item";
     commandDescriptions["DELETE"] = "Deletes an existing item";
+
+    return commandDescriptions;
+}
+
+QString Validator::getValidCommandDescription(QString command) {
+
+    QHash<QString, QString> commandDescriptions = getValidCommandDescriptions();
 
     QString result = "Unknown";
 

@@ -59,14 +59,16 @@ void Display::autoComplete() {
     // Set autoComplete below open bracket
     wmove(win, getCurrentRow() + 1, autoCompletePosition - 1);
 
-    // Show valid commands
+    QChar pad(' ');
 
     // Find the longest
-    int commandLength = findLongestCommand();
+    int longestCommandLength = findLongestCommand();
+    int longestCommandDescriptionLength = findLongestCommandDescription();
 
     int i = 1;
     foreach (auto command, Validator::getValidCommands()) {
 
+        // Only draw the max amount of options
         if (i > maxAutoCompleteOptions) {
             break;
         }
@@ -76,20 +78,18 @@ void Display::autoComplete() {
         // Get the description string
         QString descriptionString = Validator::getValidCommandDescription(command);
 
-        QChar pad(' ');
-
         // Prepend a space
         QString paddedCommand = command.prepend(pad);
 
         // Now pad the string so all are the same length
-        paddedCommand = paddedCommand.leftJustified(commandLength + 2, ' ');
+        paddedCommand = paddedCommand.leftJustified(longestCommandLength + 2, ' ');
 
         // Place the command string
         autoCompleteOption == i ? wattron(win, COLOR_PAIR(4)) : wattron(win, COLOR_PAIR(3));
         waddstr(win, paddedCommand.toLocal8Bit().data());
 
         // Calculate space left for description
-        int descriptionLength = getWindowWidth() - autoCompletePosition - commandLength;
+        int maxDescriptionLength = getWindowWidth() - autoCompletePosition - longestCommandLength;
 
         wattron(win, COLOR_PAIR(2));
 
@@ -97,9 +97,12 @@ void Display::autoComplete() {
         descriptionString.prepend(pad);
 
         // Place the description string
-        if(descriptionString.length() > descriptionLength) {
-            int difference = descriptionLength - descriptionString.length();
+        if(descriptionString.length() > maxDescriptionLength) {
+            int difference = maxDescriptionLength - descriptionString.length();
+
             descriptionString.remove(descriptionString.length() - difference - 1, difference);
+        } else {
+            descriptionString = descriptionString.leftJustified(longestCommandDescriptionLength + 2, ' ');
         }
 
         waddstr(win, descriptionString.toLocal8Bit().data());

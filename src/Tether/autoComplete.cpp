@@ -13,6 +13,22 @@ int Display::findLongestCommand() {
     return commandLength;
 }
 
+int Display::findLongestCommandDescription() {
+
+    int commandDescriptionLength = 0;
+
+    foreach (auto command, Validator::getValidCommands()) {
+
+        QString commandDescription = Validator::getValidCommandDescription(command);
+
+        if (commandDescription.length() > commandDescriptionLength) {
+            commandDescriptionLength = commandDescription.length();
+        }
+    }
+
+    return commandDescriptionLength;
+}
+
 void Display::turnAutoCompleteOn() {
 
     if(autoCompleteActive) {
